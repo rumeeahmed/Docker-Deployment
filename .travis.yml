@@ -1,11 +1,19 @@
 sudo: required
 services:
     - docker
-    
 before_install:
     - docker build -t rumeeahmed/docker-deployment -f Dockerfile.dev .
-    
 script:
-  - docker run -e CI=true rumeeahmed/docker-deployment npm run test
-
-language: generic 
+    - docker run -e CI=true rumeeahmed/docker-deployment npm run test
+language: generic
+deploy:
+    provider: elasticbeanstalk
+    region: "us-east-2"
+    app: "Docker-Deployment"
+    env: "Dockerdeployment-env-1"
+    bucket_name: "elasticbeanstalk-us-east-2-915091059854"
+    bucket_path: "Docker-Deployment"
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
+    on:
+        branch: master
